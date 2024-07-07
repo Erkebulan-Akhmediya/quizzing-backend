@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,6 +22,9 @@ public class QuestionEntity {
     @ManyToOne
     @JoinColumn(name = "test_id")
     TestEntity test;
+
+    @OneToMany
+    List<QuestionEntity> questions;
 
     QuestionEntity(String name,TestEntity test) {
         this.name = name;

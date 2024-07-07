@@ -31,7 +31,12 @@ public class TestController {
             return ResponseEntity.notFound().build();
         } else {
             return ResponseEntity.ok(
-                    new TestDto(test.getName(), test.getDescription(), test.getDuration())
+                    new TestDto(
+                            test.getId(),
+                            test.getName(),
+                            test.getDescription(),
+                            test.getDuration()
+                    )
             );
         }
     }
@@ -41,7 +46,14 @@ public class TestController {
         ArrayList<TestDto> testDtos = new ArrayList<>();
         ArrayList<TestEntity> tests = this.testService.getAllTests();
         for (TestEntity test : tests) {
-            testDtos.add(new TestDto(test.getName(), test.getDescription(), test.getDuration()));
+            testDtos.add(
+                    new TestDto(
+                            test.getId(),
+                            test.getName(),
+                            test.getDescription(),
+                            test.getDuration()
+                    )
+            );
         }
         return ResponseEntity.ok(testDtos);
     }
