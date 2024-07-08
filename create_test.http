@@ -1,6 +1,0 @@
-POST http://localhost:8080/tests
-Content-Type: application/json
-
-{
-  "name": "asd"
-}

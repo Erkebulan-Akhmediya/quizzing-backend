@@ -5,27 +5,29 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Entity(name = "answer")
 public class AnswerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    int id;
+    private int id;
 
-    String name;
+    private String name;
 
     @Column(
             name = "is_correct",
             columnDefinition = "boolean default false"
     )
-    boolean isCorrect = false;
+    private boolean isCorrect = false;
 
     @ManyToOne
     @JoinColumn(name = "question_id")
-    QuestionEntity question;
+    private QuestionEntity question;
 
     public AnswerEntity(String name, boolean isCorrect, QuestionEntity question) {
         this.name = name;

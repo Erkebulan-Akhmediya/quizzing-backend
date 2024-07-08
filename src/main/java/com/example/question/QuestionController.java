@@ -1,6 +1,9 @@
 package com.example.question;
 
+import com.example.answer.AnswerEntity;
+import com.example.answer.dto.AnswerDto;
 import com.example.question.dto.QuestionDto;
+import com.example.question.dto.QuestionWithAnswersDto;
 import com.example.tests.TestEntity;
 import com.example.tests.TestService;
 import org.springframework.http.ResponseEntity;
@@ -57,7 +60,8 @@ public class QuestionController {
     @GetMapping("/{question_id}")
     public ResponseEntity<QuestionDto> getQuestionById(
             @PathVariable("test_id") int testId,
-            @PathVariable("question_id") int questionId
+            @PathVariable("question_id") int questionId,
+            @RequestParam(name = "with_answers", defaultValue = "false") boolean withAnswers
     ) {
         try {
             TestEntity test = this.testService.getTestById(testId);
@@ -68,11 +72,27 @@ public class QuestionController {
 
             if (!question.getTest().equals(test)) return ResponseEntity.notFound().build();
 
-            QuestionDto questionDto = new QuestionDto(
-                    question.getId(),
-                    question.getName(),
-                    testId
-            );
+            ArrayList<AnswerDto> answerDtos = new ArrayList<>();
+            QuestionDto questionDto;
+            if (withAnswers) {
+                for (AnswerEntity answer : question.getAnswers()) {
+                    answerDtos.add(
+                            new AnswerDto(questionId, answer.getId(), answer.getName(), answer.isCorrect())
+                    );
+                }
+                questionDto = new QuestionWithAnswersDto(
+                        question.getId(),
+                        question.getName(),
+                        testId,
+                        answerDtos
+                );
+            } else {
+                questionDto = new QuestionDto(
+                        questionId,
+                        question.getName(),
+                        testId
+                );
+            }
             return ResponseEntity.ok().body(questionDto);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
@@ -86,7 +106,7 @@ public class QuestionController {
             List<QuestionDto> questionDtos = new ArrayList<>();
             for (QuestionEntity questionEntity : questionEntities) {
                 questionDtos.add(
-                        new QuestionDto(questionEntity.getId(), questionEntity.name, testId)
+                        new QuestionDto(questionEntity.getId(), questionEntity.getName(), testId)
                 );
             }
             return ResponseEntity.ok(questionDtos);
